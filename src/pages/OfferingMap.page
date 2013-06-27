@@ -1,0 +1,18 @@
+<apex:page standardController="Account" extensions="OfferingMapController">
+	<br/><apex:outputLink value="/{!account.Id}" id="theLink">{!account.Name}</apex:outputLink><br/><br/>
+	<apex:pageBlock title="Offering Map">
+        <apex:pageBlockTable value="{!accountOfferings}" var="item">
+            <apex:column >
+                <apex:facet name="header">Account</apex:facet> 
+                {!item.acc.Name} 
+            </apex:column>
+            <apex:repeat value="{!offeringMap}" var="o" >
+    			<apex:column >
+                	<apex:facet name="header">{!offeringMap[o].Name}</apex:facet> 
+                	<apex:image id="checked" value="/img/func_icons/util/checkmark16.gif" rendered="{!item.oaMap[o]}"/>
+                	<apex:image id="unchecked" value="/img/func_icons/remove12_on.gif" rendered="{!NOT(item.oaMap[o])}"/>
+	            </apex:column>
+			</apex:repeat>
+        </apex:pageBlockTable> 
+    </apex:pageBlock> 
+</apex:page>

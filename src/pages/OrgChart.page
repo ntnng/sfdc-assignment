@@ -1,0 +1,28 @@
+<apex:page standardController="Account" extensions="OrgChartController">
+    <apex:includeScript id="a" value="https://www.google.com/jsapi" />
+    <script type="text/javascript"> 
+        google.load('visualization', '1', {'packages':['orgchart']});
+        google.setOnLoadCallback(drawChart);
+        function drawChart() {
+          var accId = "{!account.Id}";
+          OrgChartController.loadCharts( 
+                 accId,
+                 function(result, event){
+                     var visualization = new google.visualization.OrgChart(document.getElementById('chartBlock'));
+                     var data = new google.visualization.DataTable();
+                     data.addColumn('string', 'Name');
+                     data.addColumn('string', 'Manager');
+                     data.addColumn('string', 'ToolTip');
+                     for(var i = 0; i < result.length; i++){
+                        var r = result[i];
+                        data.addRow([r.Name, (r.ReportsToId===undefined?'':r.ReportsTo.Name), (r.Title===undefined?'':r.Title)]); 
+                     }
+                     visualization.draw(data, {allowHtml:true});
+              }, {escape:true});
+          } 
+    </script>
+    <br/><apex:outputLink value="/{!account.Id}" id="theLink">{!account.Name}</apex:outputLink><br/><br/>
+    <apex:pageBlock title="Organization Chart">
+        <div id="chartBlock" style="width: 900px; height: 800px;">    </div>
+    </apex:pageBlock>
+</apex:page>

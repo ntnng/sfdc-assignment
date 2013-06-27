@@ -1,0 +1,42 @@
+<apex:page standardcontroller="Account" extensions="ReachMapController">
+    <apex:includeScript id="a" value="https://www.google.com/jsapi" />
+    <script type="text/javascript"> 
+        google.load('visualization', '1.0', {'packages':['corechart']});
+        google.setOnLoadCallback(drawChart);
+        function drawChart() {
+          var accId = "{!account.Id}";
+          ReachMapController.loadCharts( 
+                 accId,
+                 function(result, event){
+                     var visualization = new google.visualization.PieChart(document.getElementById('chartBlock'));
+                     var data = new google.visualization.DataTable();
+                     data.addColumn('string', 'Status');
+                     data.addColumn('number', 'Contact Count');
+                     for(var i = 0; i < result.length; i++){
+                        var r = result[i];
+                        data.addRow([r.status, r.count]); 
+                     }
+                     var options = {
+                          title: 'Number of contacts based on Status'
+                     };
+                    visualization.draw(data, options);
+              }, {escape:true});
+          } 
+    </script>
+    <br/><apex:outputLink value="/{!account.Id}" id="theLink">{!account.Name}</apex:outputLink><br/><br/>
+    <apex:pageBlock title="Reach Map">
+        <apex:pageBlockTable value="{!StatusCounts}" var="item">
+            <apex:column >
+                <apex:facet name="header">Status</apex:facet> 
+                {!item.status} 
+            </apex:column>
+            <apex:column >
+                <apex:facet name="header">Contact Count</apex:facet> 
+                {!item.count}
+            </apex:column>  
+        </apex:pageBlockTable> 
+    </apex:pageBlock> 
+    <apex:pageBlock title="Reach Chart">
+        <div id="chartBlock" style="width: 900px; height: 500px;">    </div>
+    </apex:pageBlock>
+</apex:page>
